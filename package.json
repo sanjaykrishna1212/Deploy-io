@@ -1,0 +1,21 @@
+{
+  "name": "Deploy.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "pkg .",
+    "build": "pkg --output Deploy-io -t node18-win ."
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "prompts": "^2.4.2"
+  }
+}
