@@ -1,9 +1,26 @@
 const prompts = require( 'prompts' );
 const express = require( 'express' );
 const path = require( 'path' );
+const os = require( 'os' );
 const app = express();
 
-( async () =>
+function getLocalIP()
+{
+    const interfaces = os.networkInterfaces();   
+    for ( const name in interfaces )
+    {
+        for ( const iface of interfaces[ name ] )
+        {
+            if ( iface.family === 'IPv4' && !iface.internal )
+            {
+                return iface.address;
+            }
+        }
+    }
+    return 'localhost';
+}
+
+async function hosting()
 {
     try
     {
@@ -27,7 +44,7 @@ const app = express();
                 message: 'Enter the port number (between 1 and 9999):',
                 validate: ( value ) =>
                 {
-                    if ( value < 1 || value > 9999 )
+                    if ( value <= 1 || value > 9999 )
                     {
                         return 'Please enter a port number between 1 and 9999.';
                     }
@@ -38,11 +55,9 @@ const app = express();
 
         const distPath = folderPath;
         const serverport = port;
+        const ipAddress = getLocalIP();
 
-        // Serve static files from the dist folder
         app.use( express.static( distPath ) );
-
-        // Serve index.html for all unmatched routes
         app.get( '*', ( req, res ) =>
         {
             res.sendFile( path.join( distPath, 'index.html' ) );
@@ -50,11 +65,13 @@ const app = express();
 
         app.listen( serverport, () =>
         {
-            console.log( `Server listening on port ${serverport}` );
+            console.log( `Server is running at: http://${ipAddress}:${serverport}` );
         } );
-    } catch ( error )
+    }
+    catch ( error )
     {
         console.error( error );
     }
-} )();
+}
 
+hosting();
